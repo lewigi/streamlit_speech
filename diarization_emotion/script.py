@@ -58,6 +58,7 @@ def preprocess_audio(audio_file):
 def emotion_detection():
         # Check if the uploaded file is not None
         st.title("Emotion Detection")
+        st.write("Emotion detection is about trying to detect the most prevalent emotion in a speech.")
 
         # File uploader
         st.sidebar.title("Upload Audio File")
@@ -83,13 +84,15 @@ def emotion_detection():
         # Perform emotion detection on the processed features
         emotion = emotion_model.predict(processed_features)
 
-
+        my_string = ' '.join(emotion)
+        
         # Display the detected emotion
-        st.write(f"Emotion detected is: {emotion}")
+        st.write(f"Emotion detected is: {my_string}")
 
 # Function for diarization
 def diarize():
     st.title("Speaker Diarization")
+    st.write("Speaker diarization is the process of segmenting and labeling an audio recording into distinct segments, each corresponding to a different speaker.")
 
     # File uploader
     st.sidebar.title("Upload Audio File")
@@ -135,6 +138,7 @@ def get_file_path(uploaded_file):
 def transcribe():
     # Transcription code here
     st.title("Audio Transcription")
+    st.write("Here we will transcript audio for text and do sentiment analysis based on the text.")
     # File uploader
     st.sidebar.title("Upload Audio File")
     uploaded_file = st.sidebar.file_uploader("Upload WAV file", type=["wav"])
@@ -165,7 +169,6 @@ def transcribe():
 
     # Display sentiment score and label
         st.header("Sentiment Analysis")
-        st.write("Sentiment Score:", sentiment_score)
         st.write("Sentiment Label:", sentiment_label)
     
 
@@ -173,7 +176,7 @@ def transcribe():
 def main():
 
     st.title("Vibe Scribe's Speech Analysis App")
-    st.write("Welcome to Vibe Scribe's Speech Analysis App. This app provides functionalities for Emotion Detection, Speaker Diarization, and Audio Transcription.")
+    st.write("Welcome to Vibe Scribe's Speech Analysis App. This app provides functionalities for Emotion Detection, Speaker Diarization, Audio Transcription and Sentiment Analysis.")
 
     st.sidebar.title("Select Functionality")
     app_mode = st.sidebar.selectbox("Choose the app mode", ["Emotion Detection", "Speaker Diarization", "Audio Transcription"])
