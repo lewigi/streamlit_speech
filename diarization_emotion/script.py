@@ -7,12 +7,6 @@ import librosa
 import numpy as np
 import joblib
 
-pipeline_diarize = Pipeline.from_pretrained(
-    "pyannote/speaker-diarization-3.1",
-    use_auth_token="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")
-
-aai.settings.api_key = "7dca156a984e439aa7071829cb46ab5d"
-transcriber = aai.Transcriber()
 
 emotion_model = joblib.load('emotion_model.pkl')
 
@@ -90,7 +84,11 @@ def emotion_detection():
         st.write(f"Emotion detected is: {my_string}")
 
 # Function for diarization
-def diarize():
+def diarize(token):
+
+    pipeline_diarize = Pipeline.from_pretrained(
+    "pyannote/speaker-diarization-3.1",
+    use_auth_token=token)
     st.title("Speaker Diarization")
     st.write("Speaker diarization is the process of segmenting and labeling an audio recording into distinct segments, each corresponding to a different speaker.")
 
@@ -135,7 +133,9 @@ def get_file_path(uploaded_file):
         return None
 
 # Function for audio trancription
-def transcribe():
+def transcribe(token):
+    aai.settings.api_key = token
+    transcriber = aai.Transcriber()
     # Transcription code here
     st.title("Audio Transcription")
     st.write("Here we will transcript audio for text and do sentiment analysis based on the text.")
@@ -177,6 +177,27 @@ def main():
 
     st.title("Vibe Scribe's Speech Analysis App")
     st.write("Welcome to Vibe Scribe's Speech Analysis App. This app provides functionalities for Emotion Detection, Speaker Diarization, Audio Transcription and Sentiment Analysis.")
+    st.sidebar.title("API Key Input")
+
+    # Pyannote API Key Input
+    st.sidebar.subheader("Pyannote API Key Input")
+    pyannote_api_key = st.sidebar.text_input("Enter your Pyannote API key", type="password")
+    if st.sidebar.button("Submit Pyannote API Key"):
+        if pyannote_api_key:
+            st.sidebar.success("Pyannote API key submitted successfully")
+            # Call functions that use the Pyannote API key here
+        else:
+            st.sidebar.error("Please enter your Pyannote API key")
+
+    # AssemblyAI API Key Input
+    st.sidebar.subheader("AssemblyAI API Key Input")
+    assembly_api_key = st.sidebar.text_input("Enter your AssemblyAI key", type="password")
+    if st.sidebar.button("Submit AssemblyAI API Key"):
+        if assembly_api_key:
+            st.sidebar.success("AssemblyAI API key submitted successfully")
+            # Call functions that use the AssemblyAI API key here
+        else:
+            st.sidebar.error("Please enter your AssemblyAI API key")
 
     st.sidebar.title("Select Functionality")
     app_mode = st.sidebar.selectbox("Choose the app mode", ["Emotion Detection", "Speaker Diarization", "Audio Transcription"])
@@ -184,9 +205,9 @@ def main():
     if app_mode == "Emotion Detection":
         emotion_detection()
     elif app_mode == "Speaker Diarization":
-        diarize()
+        diarize(pyannote_api_key)
     elif app_mode == "Audio Transcription":
-        transcribe()
+        transcribe(assembly_api_key)
 
 # Run the app
 if __name__ == "__main__":
